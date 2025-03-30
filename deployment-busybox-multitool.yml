@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-busybox-multitool
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        ports: 
+        # - containerPort: 80
+        command: ["/bin/sh", "-c", "while true; do echo \"$(date) - Log entry\" >> /var/log/log.txt; sleep 5; done"]
+        volumeMounts:
+        - name: vol-busybox-log
+          mountPath: /var/log
+      - name: multitool
+        image: wbitt/network-multitool
+        ports: 
+        # - containerPort: 8080
+        # command: ["/bin/sh", "-c", "httpd -p 8080 -h / & sleep infinity"]
+        volumeMounts:
+        - name: vol-busybox-log
+          mountPath: /tmp
+      volumes:
+      - name: vol-busybox-log
+        emptyDir: {}
+        # hostPath:
+        #   path: /var/log/syslog
