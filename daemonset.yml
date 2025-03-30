@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mypods
+  labels:
+    app: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: multitool
+        image: wbitt/network-multitool
+        command: ["/bin/sh", "-c", "sleep infinity"]
+        volumeMounts:
+        - name: var-log
+          mountPath: /tmp
+          readOnly: true
+      volumes:
+      - name: var-log
+        hostPath:
+          path: /var/log
+          # type: File
